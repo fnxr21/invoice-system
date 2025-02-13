@@ -26,7 +26,7 @@ read branch
 
 # read remote
 
-git push origini "${branch}"
+git push origin "${branch}"
 # git push "${remote}" "${branch}"
 
 echo 'Thank you for updated your repository'
