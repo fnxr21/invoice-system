@@ -15,13 +15,11 @@ Request Body :
   "items": [
     {
       "id": "1",
-      "items_name": "Design",
       "quantity": "41.00",
       "unit_price": "230.00"
     },
     {
       "id": "1",
-      "items_name": "developlement",
       "quantity": "41.00",
       "unit_price": "230.00"
     }
@@ -38,7 +36,11 @@ Response Body (Success) :
     "issue_date": "2022-01-02 ",
     "due_date": "2022-01-07",
     "subject": "Spring Marketing Campaign",
-    "customer_id": "2",
+    "customer": {
+      "id": "1",
+      "customer_name": "fandi nur",
+      "customer_address": "ST.Teluk Gong,North Jakarta Indonesia"
+    },
     "items": [
       {
         "id": "1",
@@ -47,7 +49,7 @@ Response Body (Success) :
         "unit_price": "230.00"
       },
       {
-        "id": "2",
+        "id": "1",
         "items_name": "Design",
         "quantity": "41.00",
         "unit_price": "230.00"
@@ -94,15 +96,13 @@ Response Body (Success) :
         "id": "1",
         "items_name": "Design",
         "quantity": "41.00",
-        "unit_price": "230.00",
-        "amount": "9,430.00"
+        "unit_price": "230.00"
       },
       {
         "id": "1",
         "items_name": "Design",
         "quantity": "41.00",
-        "unit_price": "230.00",
-        "amount": "9,430.00"
+        "unit_price": "230.00"
       }
     ]
   }
@@ -129,7 +129,18 @@ Response Body (Success) :
   "due_date": "2022-01-07",
   "subject": "Spring Marketing Campaign",
   "customer_id": "2",
-  "items_id": "[1,3,6]"
+  "items": [
+    {
+      "id": "1",
+      "quantity": "41.00",
+      "unit_price": "230.00"
+    },
+    {
+      "id": "3",
+      "quantity": "41.00",
+      "unit_price": "230.00"
+    }
+  ]
 }
 ```
 

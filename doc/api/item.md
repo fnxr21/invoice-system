@@ -18,7 +18,7 @@ Response Body (Success) :
 ```json
 {
   "data": {
-    "item_name": "development",
+    "item_name": "design",
     "item_type": "service",
   }
 }
