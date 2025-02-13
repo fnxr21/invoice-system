@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   invoicedb:
-    image: mysql:5.7 # for support on mac 
+    image: mysql:5.7 # for support on mac need modif platform
     platform: linux/amd64
     container_name: voucher-db
     # restart: always
