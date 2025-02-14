@@ -25,12 +25,14 @@ func DataBaseinit() {
 	var dbhost = os.Getenv("DB_HOST")
 	var dbport = os.Getenv("DB_PORT")
 
+	
 	var mysqlconfig = dbuser + ":" + dbpass + "@tcp(" + dbhost + ":" + dbport + ")/"
 	var gormConfig = &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{
 			SingularTable: true,
 		}}
-
+		
+		fmt.Println(mysqlconfig,mst,dbconfig)
 	DB, err = gorm.Open(mysql.Open(fmt.Sprintf("%s%s%s", mysqlconfig, mst, dbconfig)), gormConfig)
 	if err != nil {
 		fmt.Println("connect to database mst failed")
@@ -56,10 +58,10 @@ func DataBaseinit() {
 	// Frequent stale connection errors	 Lower SetConnMaxLifetime(1 * time.Hour)
 
 	// Ensure the database connection is alive
-	if err := sqlDB.Ping(); err != nil {
-		fmt.Println("Database ping failed:", err)
-		panic(err)
-	}
+	// if err := sqlDB.Ping(); err != nil {
+	// 	fmt.Println("Database ping failed:", err)
+	// 	panic(err)
+	// }
 
 	fmt.Println("connected to database")
 }
