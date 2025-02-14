@@ -11,15 +11,15 @@ Request Body :
   "issue_date": "2022-01-02 ",
   "due_date": "2022-01-07",
   "subject": "Spring Marketing Campaign",
-  "customer_id": "2",
+  "customer_id": 2,
   "items": [
     {
-      "id": "1",
+      "id": 1,
       "quantity": "41.00",
       "unit_price": "230.00"
     },
     {
-      "id": "1",
+      "id": 1,
       "quantity": "41.00",
       "unit_price": "230.00"
     }
@@ -32,24 +32,24 @@ Response Body (Success) :
 ```json
 {
   "data": {
-    "invoice_id": "001",
+    "invoice_id": 001,
     "issue_date": "2022-01-02 ",
     "due_date": "2022-01-07",
     "subject": "Spring Marketing Campaign",
     "customer": {
-      "id": "1",
+      "id": 1,
       "customer_name": "fandi nur",
       "customer_address": "ST.Teluk Gong,North Jakarta Indonesia"
     },
     "items": [
       {
-        "id": "1",
+        "id": 1,
         "items_name": "Design",
         "quantity": "41.00",
         "unit_price": "230.00"
       },
       {
-        "id": "1",
+        "id": 2,
         "items_name": "Design",
         "quantity": "41.00",
         "unit_price": "230.00"
@@ -82,24 +82,24 @@ Response Body (Success) :
 ```json
 {
   "data": {
-    "invoice_id": "001",
+    "invoice_id": 001,
     "issue_date": "2022-01-02 ",
     "due_date": "2022-01-07",
     "subject": "Spring Marketing Campaign",
     "customer": {
-      "id": "1",
+      "id": 1,
       "customer_name": "fandi nur",
       "customer_address": "ST.Teluk Gong,North Jakarta Indonesia"
     },
     "items": [
       {
-        "id": "1",
+        "id": 1,
         "items_name": "Design",
         "quantity": "41.00",
         "unit_price": "230.00"
       },
       {
-        "id": "1",
+        "id": 1,
         "items_name": "Design",
         "quantity": "41.00",
         "unit_price": "230.00"
@@ -128,15 +128,15 @@ Response Body (Success) :
   "issue_date": "2022-01-02 ",
   "due_date": "2022-01-07",
   "subject": "Spring Marketing Campaign",
-  "customer_id": "2",
+  "customer_id": 2,
   "items": [
     {
-      "id": "1",
+      "id": 1,
       "quantity": "41.00",
       "unit_price": "230.00"
     },
     {
-      "id": "3",
+      "id": 3,
       "quantity": "41.00",
       "unit_price": "230.00"
     }
@@ -184,19 +184,19 @@ Response Body (Success) :
 {
   "data": [
     {
-      "invoice_id": "001",
+      "invoice_id": 001,
       "issue_date": "2022-01-02 ",
       "subject": "Spring Marketing Campaign",
-      "total_items": "3",
+      "total_items": 3,
       "customer_name": "fandi nur",
       "due_date": "2022-01-07",
       "status": "paid"
     },
     {
-      "invoice_id": "002",
+      "invoice_id": 002,
       "issue_date": "2022-01-02 ",
       "subject": "Spring Marketing Campaign Sudirman",
-      "total_items": "2",
+      "total_items": 2,
       "customer_name": "fandi nur",
       "due_date": "2022-01-07",
       "status": "unpaid"

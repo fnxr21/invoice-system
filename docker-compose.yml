@@ -5,7 +5,7 @@ services:
     image: mysql:5.7 # Consider using a specific version (e.g., postgres:14)
     platform: linux/amd64
     container_name: invoice-db
-    # restart: always
+    restart: unless-stopped
     environment:
       - MYSQL_USER=${DB_USER}
       - MYSQL_PASSWORD=${DB_PASS}
