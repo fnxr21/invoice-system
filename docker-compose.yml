@@ -2,9 +2,9 @@ version: "3.8"
 
 services:
   invoicedb:
-    image: mysql:5.7 # for support on mac need modif platform
+    image: mysql:5.7 # Consider using a specific version (e.g., postgres:14)
     platform: linux/amd64
-    container_name: voucher-db
+    container_name: invoice-db
     # restart: always
     environment:
       - MYSQL_USER=${DB_USER}
@@ -14,26 +14,7 @@ services:
     ports:
       - ${DB_PORT_EXPOSE}:${DB_DEFAULTPORT}
     volumes:
-      - invoice_data:/var/lib/mysql
-
-  # service-voucher:
-  #   build:
-  #     dockerfile: Dockerfile
-  #     context: .
-  #   restart: always
-  #   container_name: service-voucher
-  #   environment:
-  #     - DB_CHARNTIME=${DB_CHARNTIME}
-  #     - APP_PORT=5001
-  #     - DB_HOST=${DB_HOST}
-  #     - DB_PORT=${DB_PORT}
-  #     - DB_USER=${DB_USER}
-  #     - DB_PASS=${DB_PASS}
-  #     - DB_MST=${DB_MST}
-  #   ports:
-  #     - "5001:5001"
-  #   depends_on:
-  #     - invoice-db
-
+      - invoicedb_data:/var/lib/mysql
+      
 volumes:
-  invoice_data:
+  invoicedb_data:
