@@ -12,13 +12,13 @@ read commitMessage
 
 git commit -m "$commitMessage"
 
-# git push origin main
+git push origin dev
 
-echo 'Enter the branch name:'
+# echo 'Enter the branch name:'
 
-git branch -v
+# git branch -v
 
-read branch
+# read branch
 
 # git remote -v
 
@@ -26,7 +26,7 @@ read branch
 
 # read remote
 
-git push origin "${branch}"
+# git push origin "${branch}"
 # git push "${remote}" "${branch}"
 
 echo 'Thank you for updated your repository'
