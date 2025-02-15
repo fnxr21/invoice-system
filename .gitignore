@@ -4,5 +4,6 @@
 makefile
 
 push.sh
+cmd
+pkg
 # internal
-# internal/model

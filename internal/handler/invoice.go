@@ -1,0 +1,51 @@
+package handler
+
+import (
+	"fmt"
+	"net/http"
+	"strconv"
+
+	invoicedto "github.com/fnxr21/invoice-system/internal/dto/invoice"
+	resultdto "github.com/fnxr21/invoice-system/internal/dto/result"
+	"github.com/fnxr21/invoice-system/internal/service"
+	"github.com/labstack/echo/v4"
+)
+
+type handlerInvoice struct {
+	InvoiceService service.InvoiceService
+}
+
+func HandlerInvoice(InvoiceService service.InvoiceService) *handlerInvoice {
+	return &handlerInvoice{InvoiceService}
+}
+
+func (h *handlerInvoice) CreateInvoice(c echo.Context) error {
+
+	var req invoicedto.InvoiceRequest
+	if err := c.Bind(&req); err != nil {
+		fmt.Println("Bind Error:", err) // Debugging untuk melihat kesalahan
+		return c.JSON(http.StatusBadRequest, map[string]string{
+			"error":  "Invalid request payload",
+			"detail": err.Error(),
+		})
+	}
+	if err := c.Validate(req); err != nil {
+		return err
+	}
+	response, _ := h.InvoiceService.CreateInvoice(&req)
+
+	return c.JSON(http.StatusOK, resultdto.SuccessResult{Data: response})
+}
+
+func (h *handlerInvoice) IndexInvoice(c echo.Context) error {
+	response, _ := h.InvoiceService.ListInvoice()
+
+	return c.JSON(http.StatusOK, resultdto.SuccessResult{Data: response})
+}
+func (h *handlerInvoice) GetInvoiceByID(c echo.Context) error {
+	param := c.Param("id")
+	id, _ := strconv.Atoi(param)
+	response, _ := h.InvoiceService.GetInvoiceByID(uint(id))
+
+	return c.JSON(http.StatusOK, resultdto.SuccessResult{Data: response})
+}
