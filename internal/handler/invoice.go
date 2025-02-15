@@ -37,7 +37,7 @@ func (h *handlerInvoice) CreateInvoice(c echo.Context) error {
 	return c.JSON(http.StatusOK, resultdto.SuccessResult{Data: response})
 }
 
-func (h *handlerInvoice) ListInvoice(c echo.Context) error {
+func (h *handlerInvoice) IndexInvoice(c echo.Context) error {
 	response, _ := h.InvoiceService.ListInvoice()
 
 	return c.JSON(http.StatusOK, resultdto.SuccessResult{Data: response})

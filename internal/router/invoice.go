@@ -14,6 +14,6 @@ func Invoice(e *echo.Group) {
 	h := handler.HandlerInvoice(service)
 
 	e.POST("/invoice", h.CreateInvoice)
-	// e.GET("/invoice/list", h.ListInvoice)
+	e.POST("/invoice/search", h.IndexInvoice)
 	e.GET("/invoice/:id", h.GetInvoiceByID)
 }
