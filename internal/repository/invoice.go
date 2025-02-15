@@ -1,6 +1,8 @@
 package repositories
 
 import (
+	// "fmt"
+
 	"github.com/fnxr21/invoice-system/internal/model"
 )
 
@@ -14,20 +16,11 @@ type Invoice interface {
 func (r *repository) CreateInvoice(invoice model.Invoice) (*model.Invoice, error) {
 	var err error
 
+	// fmt.Println("invo", invoice.items)
 	tx := r.db.Begin()
 	if tx.Error != nil {
 		return nil, tx.Error
 	}
-
-	var lastInvoiceID uint
-	// get last invoice ID safely and lock transaction in  database level with for update
-	if err = tx.Raw("SELECT IFNULL(MAX(invoice_id), 0) FROM invoices FOR UPDATE").Scan(&lastInvoiceID).Error; err != nil {
-		tx.Rollback()
-		return nil, err
-	}
-
-	// Assign new invoice ID
-	invoice.InvoiceID = lastInvoiceID + 1
 
 	if err = tx.Create(&invoice).Error; err != nil {
 		tx.Rollback()
@@ -36,8 +29,10 @@ func (r *repository) CreateInvoice(invoice model.Invoice) (*model.Invoice, error
 
 	//create invoice item
 	for _, item := range invoice.InvoiceItem {
+
 		invoiceitem := model.InvoiceItem{
-			InvoiceID: invoice.InvoiceID, //add invoice id
+			InvoiceID: invoice.ID, //add invoice id
+			ItemID:    item.ItemID,
 			Name:      item.Name,
 			Quantity:  item.Quantity,
 			UnitPrice: item.UnitPrice,
@@ -50,9 +45,13 @@ func (r *repository) CreateInvoice(invoice model.Invoice) (*model.Invoice, error
 
 	// last Commit
 	if err := tx.Commit().Error; err != nil {
-		return &invoice, err
+		tx.Rollback()
+		return nil, err
 	}
-
+	// Load Customer agar bisa dikembalikan dalam response
+	if err := r.db.Preload("Customer").Preload("InvoiceItem").First(&invoice, invoice.ID).Error; err != nil {
+		return nil, err
+	}
 	return &invoice, err
 
 }
@@ -75,7 +74,7 @@ func (r *repository) UpdateInvoice(invoice model.Invoice) (*model.Invoice, error
 	}
 	//check base on invoiceid
 	var existingInvoice model.Invoice
-	if err = tx.First(&existingInvoice, "invoice = ?", invoice.InvoiceID).Error; err != nil {
+	if err = tx.First(&existingInvoice, "invoice = ?", invoice.ID).Error; err != nil {
 		tx.Rollback()
 		return nil, err
 	}
@@ -100,9 +99,9 @@ func (r *repository) UpdateInvoice(invoice model.Invoice) (*model.Invoice, error
 		tx.Rollback()
 		return nil, err
 	}
-	
+
 	//bulk delete invoiceitems base on invoiceID
-	if err = tx.Where("invoice_id=?", invoice.InvoiceID).Delete(&model.InvoiceItem{}).Error; err != nil {
+	if err = tx.Where("id=?", invoice.ID).Delete(&model.InvoiceItem{}).Error; err != nil {
 		tx.Rollback()
 		return nil, err
 	}
@@ -110,7 +109,7 @@ func (r *repository) UpdateInvoice(invoice model.Invoice) (*model.Invoice, error
 	//create invoice item
 	for _, item := range invoice.InvoiceItem {
 		invoiceitem := model.InvoiceItem{
-			InvoiceID: invoice.InvoiceID, //add invoice id
+			InvoiceID: invoice.ID, //add invoice id
 			Name:      item.Name,
 			Quantity:  item.Quantity,
 			UnitPrice: item.UnitPrice,

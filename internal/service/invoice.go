@@ -41,6 +41,7 @@ func (r *invoiceService) CreateInvoice(request *invoicedto.InvoiceRequest) (*mod
 		CustomerID: request.CustomerID,
 	}
 
+
 	//append direct to invoice
 	for _, item := range request.Items {
 		invoice.InvoiceItem = append(invoice.InvoiceItem, model.InvoiceItem{
@@ -48,8 +49,14 @@ func (r *invoiceService) CreateInvoice(request *invoicedto.InvoiceRequest) (*mod
 			Name:      item.Name,
 			Quantity:  item.Quantity,
 			UnitPrice: item.UnitPrice,
+
 		})
 	}
+	// fmt.Println(invoice.InvoiceItem)
+	fmt.Println()
+	// fmt.Println(request)
+	// fmt.Println()
+
 
 	createInvoice, err := r.InvoiceRepository.CreateInvoice(invoice)
 	if err != nil {
@@ -57,6 +64,20 @@ func (r *invoiceService) CreateInvoice(request *invoicedto.InvoiceRequest) (*mod
 	}
 
 	return createInvoice, nil
+}
+func (r *invoiceService) ListInvoice() ([]*model.Invoice, error) {
+	user, err := r.InvoiceRepository.ListInvoice()
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+func (r *invoiceService) GetInvoiceByID(id uint) (*model.Invoice, error) {
+	user, err := r.InvoiceRepository.GetInvoiceByID(id)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
 }
 
 func parseDate(dateStr string) (time.Time, error) {

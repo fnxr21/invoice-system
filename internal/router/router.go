@@ -7,4 +7,5 @@ import (
 func RouterInit(r *echo.Group) {
 	Customer(r)
 	Item(r)
+	Invoice(r)
 }

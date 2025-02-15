@@ -10,14 +10,14 @@ type (
 	//database
 	Invoice struct {
 		gorm.Model
-		InvoiceID     uint          `gorm:"primaryKey;index"`
+		// InvoiceID     uint          `gorm:"primaryKey;index"`
 		IssueDate     time.Time     `gorm:"index"`
 		Subject       string        `gorm:"index"`
 		DueDate       time.Time     `gorm:"index"`
 		Status        string        `gorm:"type:enum('paid', 'unpaid');default:'unpaid';not null;index"`
 		CustomerID    uint          `gorm:"index"`
 		Customer      Customer      `gorm:"foreignKey:CustomerID" json:"customer"`
-		InvoiceItem   []InvoiceItem `gorm:"foreignKey:InvoiceID" json:"invoice"`
+		InvoiceItem   []InvoiceItem `json:"invoice"`
 	}
 	// model for repository
 	InvoiceIndexing struct {
