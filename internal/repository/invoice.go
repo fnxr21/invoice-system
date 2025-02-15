@@ -57,7 +57,8 @@ func (r *repository) CreateInvoice(invoice model.Invoice) (*model.Invoice, error
 }
 func (r *repository) GetInvoiceByID(id uint) (*model.Invoice, error) {
 	var invoice *model.Invoice
-	err := r.db.Where("id = ?", id).First(&invoice).Error
+
+	err := r.db.Preload("Customer").Preload("InvoiceItem").Where("id = ?", id).First(&invoice).Error
 	return invoice, err
 }
 func (r *repository) ListInvoice() ([]*model.Invoice, error) {
