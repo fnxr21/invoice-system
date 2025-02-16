@@ -89,3 +89,16 @@ Start the server
 ```cmd
 go run main.go
 ```
+
+## Simple Testing
+
+navigate to the service 
+
+```cmd
+cd internal/service
+```
+running the test
+
+```cmd
+go test -v
+```
