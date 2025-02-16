@@ -82,7 +82,7 @@ func (h *handlerInvoice) UpdateInvoiceByID(c echo.Context) error {
 		return err
 	}
 	req.ID = uint(param_id)
-	response, _ := h.InvoiceService.UpdateInvoice(&req)
+	response, err := h.InvoiceService.UpdateInvoice(&req)
 
 	return c.JSON(http.StatusOK, resultdto.SuccessResult{Data: response})
 }

@@ -8,19 +8,19 @@ type (
 		UnitPrice float64 `json:"unit_price"`
 	}
 	InvoiceRequest struct {
-		IssueDate  string `json:"issue_date"`
-		DueDate    string `json:"due_date"`
-		Subject    string `json:"subject"`
-		CustomerID uint   `json:"customer_id"`
-		Items      []Item `json:"items"`
+		IssueDate  string `json:"issue_date" validate:"required"`
+		DueDate    string `json:"due_date" validate:"required"`
+		Subject    string `json:"subject" validate:"required"`
+		CustomerID uint   `json:"customer_id" validate:"required"`
+		Items      []Item `json:"items" validate:"required"`
 	}
 	InvoiceRequestUpdate struct {
 		ID         uint
 		IssueDate  string `json:"issue_date"`
 		DueDate    string `json:"due_date"`
 		Subject    string `json:"subject"`
-		CustomerID uint   `json:"customer_id"`
-		Items      []Item `json:"items"`
+		CustomerID uint   `json:"customer_id" validate:"required"`
+		Items      []Item `json:"items" validate:"required"`
 	}
 
 	Customer struct {
@@ -45,8 +45,8 @@ type (
 		CustomerName string `json:"customer_name"`
 		TotalItems   int    `json:"total_items"`
 		Status       string `json:"status"`
-		Page         int    `json:"page"`
-		Size         int    `json:"size" validate:""`
+		Page         int    `json:"page" validate:"required"`
+		Size         int    `json:"size" validate:"required"`
 	}
 	InvoiceIndexingResponse struct {
 		InvoiceID    uint   `json:"invoice_id"`

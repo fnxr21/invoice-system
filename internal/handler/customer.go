@@ -7,6 +7,7 @@ import (
 	customerdto "github.com/fnxr21/invoice-system/internal/dto/customer"
 	resultdto "github.com/fnxr21/invoice-system/internal/dto/result"
 	"github.com/fnxr21/invoice-system/internal/service"
+	errorhandler "github.com/fnxr21/invoice-system/pkg/error"
 	"github.com/labstack/echo/v4"
 )
 
@@ -31,20 +32,29 @@ func (h *handlerCustomer) CreateCustomer(c echo.Context) error {
 		return err
 	}
 
-	response, _ := h.CustomerService.CreateCustomer(&req)
-
+	response, err := h.CustomerService.CreateCustomer(&req)
+	if err != nil {
+		return errorhandler.ErrorHandler(err, http.StatusInternalServerError, c)
+	}
 	return c.JSON(http.StatusOK, resultdto.SuccessResult{Data: response})
 }
 
 func (h *handlerCustomer) ListCustomer(c echo.Context) error {
-	response, _ := h.CustomerService.ListCustomer()
-
+	response, err := h.CustomerService.ListCustomer()
+	if err != nil {
+		return errorhandler.ErrorHandler(err, http.StatusInternalServerError, c)
+	}
 	return c.JSON(http.StatusOK, resultdto.SuccessResult{Data: response})
 }
 func (h *handlerCustomer) GetCustomerByID(c echo.Context) error {
 	param := c.Param("id")
-	id, _ := strconv.Atoi(param)
-	response, _ := h.CustomerService.GetCustomerByID(uint(id))
-
+	id, err := strconv.Atoi(param)
+	if err != nil {
+		return errorhandler.ErrorHandler(err, http.StatusInternalServerError, c)
+	}
+	response, err := h.CustomerService.GetCustomerByID(uint(id))
+	if err != nil {
+		return errorhandler.ErrorHandler(err, http.StatusInternalServerError, c)
+	}
 	return c.JSON(http.StatusOK, resultdto.SuccessResult{Data: response})
 }
