@@ -13,8 +13,8 @@ type Invoice interface {
 	GetInvoiceByID(id uint) (*model.Invoice, error)
 	ListInvoice() ([]*model.Invoice, error)
 	UpdateInvoice(invoice model.Invoice) (*model.Invoice, error)
-	GetInvoceIndexing(filter model.InvoiceIndexing) ([]*model.InvoiceIndexing, error)
-
+	//indexing
+	GetInvoceIndexing(filter model.InvoiceIndexing) ([]*model.InvoiceIndexingNew, error)
 }
 
 func (r *repository) CreateInvoice(invoice model.Invoice) (*model.Invoice, error) {
@@ -31,9 +31,19 @@ func (r *repository) CreateInvoice(invoice model.Invoice) (*model.Invoice, error
 		return nil, err
 	}
 
-	//create invoice item
-	for _, item := range invoice.InvoiceItem {
+	// last Commit
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback()
+		return nil, err
+	}
 
+	uniqueItems := make(map[int]bool)
+	for _, item := range invoice.InvoiceItem {
+		if _, exists := uniqueItems[int(item.InvoiceID)]; exists {
+			continue // Skip jika item sudah ada
+		}
+
+		uniqueItems[int(item.ItemID)] = true
 		invoiceitem := model.InvoiceItem{
 			InvoiceID: invoice.ID, //add invoice id
 			ItemID:    item.ItemID,
@@ -52,6 +62,7 @@ func (r *repository) CreateInvoice(invoice model.Invoice) (*model.Invoice, error
 		tx.Rollback()
 		return nil, err
 	}
+
 	// Load Customer agar bisa dikembalikan dalam response
 	if err := r.db.Preload("Customer").Preload("InvoiceItem").First(&invoice, invoice.ID).Error; err != nil {
 		return nil, err
@@ -68,7 +79,7 @@ func (r *repository) GetInvoiceByID(id uint) (*model.Invoice, error) {
 }
 func (r *repository) ListInvoice() ([]*model.Invoice, error) {
 	var invoice []*model.Invoice
-	err := r.db.Find(&invoice).Error
+	err := r.db.Preload("Customer").Preload("InvoiceItem").Find(&invoice).Error
 	return invoice, err
 }
 
@@ -107,11 +118,10 @@ func (r *repository) UpdateInvoice(invoice model.Invoice) (*model.Invoice, error
 	}
 
 	//bulk delete invoiceitems base on invoiceID
-	if err = tx.Where("id=?", invoice.ID).Delete(&model.InvoiceItem{}).Error; err != nil {
+	if err = tx.Where("id=?", invoice.ID).Unscoped().Delete(&model.InvoiceItem{}).Error; err != nil {
 		tx.Rollback()
 		return nil, err
 	}
-
 	//create invoice item
 	for _, item := range invoice.InvoiceItem {
 		invoiceitem := model.InvoiceItem{
@@ -135,21 +145,24 @@ func (r *repository) UpdateInvoice(invoice model.Invoice) (*model.Invoice, error
 
 }
 
-func (r *repository) GetInvoceIndexing(filter model.InvoiceIndexing) ([]*model.InvoiceIndexing, error) {
+func (r *repository) GetInvoceIndexing(filter model.InvoiceIndexing) ([]*model.InvoiceIndexingNew, error) {
 
 	pagesize := filter.Size
 	offset := (filter.Page - 1) * pagesize
 
-	var invoiceValue []*model.InvoiceIndexing
+	var invoiceValue []*model.InvoiceIndexingNew
 
 	query := r.db.
 		Limit(pagesize).
 		Offset(offset).
+		Model(&model.Invoice{}).
+		Select("invoice.id as invoice_id, invoice.issue_date, invoice.due_date, invoice.subject, customer.name as customer_name, invoice.status, COALESCE(COUNT(invoice_item.id), 0) AS total_items").
 		Joins("LEFT JOIN customer ON  invoice.customer_id = customer.id ").
-		Joins("LEFT JOIN invoice_item ON invoice.invoice_id = invoice_item.id")
+		Joins("LEFT JOIN invoice_item ON invoice.id = invoice_item.invoice_id").
+		Group("invoice.id, customer.name, invoice.issue_date, invoice.due_date, invoice.subject, invoice.status")
 
 	if filter.InvoiceID != 0 {
-		query = query.Where("invoice.invoice_id LIKE ?", "%"+fmt.Sprint(filter.InvoiceID)+"%")
+		query = query.Where("invoice.id LIKE ?", "%"+fmt.Sprint(filter.InvoiceID)+"%")
 	}
 	if filter.Subject != "" {
 		query = query.Where("invoice.subject LIKE ?", "%"+filter.Subject+"%")
@@ -167,7 +180,12 @@ func (r *repository) GetInvoceIndexing(filter model.InvoiceIndexing) ([]*model.I
 		query = query.Where("DATE(invoice.due_date) = ?", filter.DueDate.Format("2006-01-02"))
 	}
 
-	if err := query.Find(&invoiceValue).Error; err != nil {
+	if filter.TotalItems > 0 {
+		query = query.Having("total_items = ?", filter.TotalItems)
+	}
+
+	if err := query.
+		Find(&invoiceValue).Error; err != nil {
 		return nil, err
 	}
 
