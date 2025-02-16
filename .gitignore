@@ -5,5 +5,5 @@ makefile
 
 push.sh
 cmd
-pkg
+# pkg
 # internal
