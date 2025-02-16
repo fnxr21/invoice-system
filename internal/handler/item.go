@@ -7,6 +7,7 @@ import (
 	itemdto "github.com/fnxr21/invoice-system/internal/dto/item"
 	resultdto "github.com/fnxr21/invoice-system/internal/dto/result"
 	"github.com/fnxr21/invoice-system/internal/service"
+	errorhandler "github.com/fnxr21/invoice-system/pkg/error"
 	"github.com/labstack/echo/v4"
 )
 
@@ -29,7 +30,10 @@ func (h *handlerItem) CreateItem(c echo.Context) error {
 	if err := c.Validate(req); err != nil {
 		return err
 	}
-	response, _ := h.ItemService.CreateItem(&req)
+	response, err := h.ItemService.CreateItem(&req)
+	if err != nil {
+		return errorhandler.ErrorHandler(err, http.StatusBadRequest, c)
+	}
 
 	return c.JSON(http.StatusOK, resultdto.SuccessResult{Data: response})
 }
@@ -41,8 +45,15 @@ func (h *handlerItem) ListItem(c echo.Context) error {
 }
 func (h *handlerItem) GetItemByID(c echo.Context) error {
 	param := c.Param("id")
-	id, _ := strconv.Atoi(param)
-	response, _ := h.ItemService.GetItemByID(uint(id))
+	id, err := strconv.Atoi(param)
+	if err != nil {
+		return errorhandler.ErrorHandler(err, http.StatusInternalServerError, c)
+	}
+
+	response, err := h.ItemService.GetItemByID(uint(id))
+	if err != nil {
+		return errorhandler.ErrorHandler(err, http.StatusInternalServerError, c)
+	}
 
 	return c.JSON(http.StatusOK, resultdto.SuccessResult{Data: response})
 }

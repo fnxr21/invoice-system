@@ -16,4 +16,5 @@ func Invoice(e *echo.Group) {
 	e.POST("/invoice", h.CreateInvoice)
 	e.POST("/invoice/search", h.IndexInvoice)
 	e.GET("/invoice/:id", h.GetInvoiceByID)
+	e.PATCH("/invoice/:id", h.UpdateInvoiceByID)
 }
