@@ -11,6 +11,7 @@ import (
 
 type InvoiceService interface {
 	CreateInvoice(request *invoicedto.InvoiceRequest) (*model.Invoice, error)
+	UpdateInvoice(request *invoicedto.InvoiceRequestUpdate) (*model.Invoice, error)
 	IndexInvoice(req invoicedto.InvoiceIndexing) ([]*model.InvoiceIndexingNew, *invoicedto.PagingInvoiceIndexing, error)
 	GetInvoiceByID(id uint) (*model.Invoice, error)
 }
@@ -105,6 +106,46 @@ func (r *invoiceService) GetInvoiceByID(id uint) (*model.Invoice, error) {
 		return nil, err
 	}
 	return user, nil
+}
+func (r *invoiceService) UpdateInvoice(request *invoicedto.InvoiceRequestUpdate) (*model.Invoice, error) {
+
+	issueDate, err := parseDate(request.IssueDate)
+	if err != nil {
+		return nil, err // Handle error for issueDate
+	}
+
+	dueDate, err := parseDate(request.DueDate)
+	if err != nil {
+		return nil, err // Handle error for dueDate
+	}
+	invoice := model.Invoice{
+		IssueDate:  issueDate,
+		DueDate:    dueDate,
+		Subject:    request.Subject,
+		CustomerID: request.CustomerID,
+	}
+
+	invoice.ID = request.ID
+	//append direct to invoice
+	for _, item := range request.Items {
+		invoice.InvoiceItem = append(invoice.InvoiceItem, model.InvoiceItem{
+			ItemID:    item.ID,
+			Name:      item.Name,
+			Quantity:  item.Quantity,
+			UnitPrice: item.UnitPrice,
+		})
+	}
+	// fmt.Println(invoice.InvoiceItem)
+	fmt.Println()
+	// fmt.Println(request)
+	// fmt.Println()
+
+	createInvoice, err := r.InvoiceRepository.UpdateInvoice(invoice)
+	if err != nil {
+		return nil, err
+	}
+
+	return createInvoice, nil
 }
 
 func parseDate(dateStr string) (time.Time, error) {

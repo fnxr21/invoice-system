@@ -91,14 +91,13 @@ func (r *repository) UpdateInvoice(invoice model.Invoice) (*model.Invoice, error
 	}
 	//check base on invoiceid
 	var existingInvoice model.Invoice
-	if err = tx.First(&existingInvoice, "invoice = ?", invoice.ID).Error; err != nil {
+	if err = tx.First(&existingInvoice, "invoice.id = ?", invoice.ID).Error; err != nil {
 		tx.Rollback()
 		return nil, err
 	}
 	// check invoice is same or not,if yes update the customer
 	if existingInvoice.CustomerID != invoice.CustomerID {
 		existingInvoice.CustomerID = invoice.CustomerID
-
 	}
 	if invoice.Subject != "" && invoice.Subject != existingInvoice.Subject {
 		existingInvoice.Subject = invoice.Subject
@@ -117,15 +116,30 @@ func (r *repository) UpdateInvoice(invoice model.Invoice) (*model.Invoice, error
 		return nil, err
 	}
 
+	// last Commit
+	if err := tx.Commit().Error; err != nil {
+		return &invoice, err
+	}
+	tx = r.db.Begin()
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
 	//bulk delete invoiceitems base on invoiceID
-	if err = tx.Where("id=?", invoice.ID).Unscoped().Delete(&model.InvoiceItem{}).Error; err != nil {
+	if err = tx.Where("invoice_id=?", invoice.ID).Unscoped().Delete(&model.InvoiceItem{}).Error; err != nil {
 		tx.Rollback()
 		return nil, err
 	}
-	//create invoice item
+	// create invoice item
+	uniqueItems := make(map[int]bool)
 	for _, item := range invoice.InvoiceItem {
+		if _, exists := uniqueItems[int(item.InvoiceID)]; exists {
+			continue // Skip jika item sudah ada
+		}
+
+		uniqueItems[int(item.ItemID)] = true
 		invoiceitem := model.InvoiceItem{
 			InvoiceID: invoice.ID, //add invoice id
+			ItemID:    item.ItemID,
 			Name:      item.Name,
 			Quantity:  item.Quantity,
 			UnitPrice: item.UnitPrice,
@@ -135,10 +149,14 @@ func (r *repository) UpdateInvoice(invoice model.Invoice) (*model.Invoice, error
 			return nil, err
 		}
 	}
-
 	// last Commit
 	if err := tx.Commit().Error; err != nil {
 		return &invoice, err
+	}
+
+	// Load Customer agar bisa dikembalikan dalam response
+	if err := r.db.Preload("Customer").Preload("InvoiceItem").First(&invoice, invoice.ID).Error; err != nil {
+		return nil, err
 	}
 
 	return &invoice, nil

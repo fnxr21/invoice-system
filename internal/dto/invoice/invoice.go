@@ -14,6 +14,14 @@ type (
 		CustomerID uint   `json:"customer_id"`
 		Items      []Item `json:"items"`
 	}
+	InvoiceRequestUpdate struct {
+		ID         uint
+		IssueDate  string `json:"issue_date"`
+		DueDate    string `json:"due_date"`
+		Subject    string `json:"subject"`
+		CustomerID uint   `json:"customer_id"`
+		Items      []Item `json:"items"`
+	}
 
 	Customer struct {
 		ID      uint   `json:"id"`
@@ -52,6 +60,6 @@ type (
 	PagingInvoiceIndexing struct {
 		CurrentPage int `json:"current_page"`
 		// TotalPage   int `json:"total_page"`
-		Size        int `json:"size"`
+		Size int `json:"size"`
 	}
 )
