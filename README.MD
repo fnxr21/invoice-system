@@ -2,8 +2,8 @@
 
 The Invoice System streamlines invoice creation and tracking for both paid and unpaid transactions. It manages customer data and job types, including services and equipment. Designed for efficient monitoring, the system focuses solely on generating and tracking invoices without handling payment updates.
 
-
 Link
+
 - [ERD](https://drawsql.app/teams/team-1756/diagrams/invoice)
 - [Postmant](https://crimson-crater-385688.postman.co/workspace/Open~b2b49bd4-fdb3-472f-ae87-d815a933728a/collection/27541101-2afa9ac1-36c0-47dc-8996-ba565965fb0e?action=share&creator=27541101&active-environment=27541101-3f0ffd3d-2f19-42c1-a63b-666145fff426)
 - [GitHub](https://github.com/fnxr21/invoice-system)
@@ -16,7 +16,7 @@ Link
 ├── doc/                      # Documentation files (e.g., API specs, design notes)
 │   ├── api/                  # API-related documentation
 │   ├── README.md             # Documentation about Git strategy
-│   └── ...                   
+│   └── ...
 ├── internal/                 # Private application code, organized by domain
 │   ├── database/             # Database setup and access (e.g., connection, migrations)
 │   ├── dto/                  # Data Transfer Objects (DTOs) for structuring input and output data
@@ -38,9 +38,11 @@ Link
 ├── push.sh                   # Script for automating Git push operations
 └── README.md                 # Project overview and usage guide
 ```
+
 # Running in Local
 
 Clone the repository
+
 ```cmd
 git clone https://github.com/fnxr21/invoice-system
 ```
@@ -59,6 +61,7 @@ go mod tidy
 ```
 
 .env
+
 ```env
 SECRET_KEY=SECRET_KEY
 
@@ -81,9 +84,11 @@ DB_DEFAULTPORT=3306
 ```
 
 running docker mysql db version 5.7
+
 ```cmd
 docker compose up -d
 ```
+
 Start the server
 
 ```cmd
@@ -92,11 +97,12 @@ go run main.go
 
 ## Simple Testing
 
-navigate to the service 
+navigate to the service
 
 ```cmd
 cd internal/service
 ```
+
 running the test
 
 ```cmd
