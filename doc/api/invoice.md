@@ -204,8 +204,8 @@ Response Body (Success) :
   ],
   "paging": {
     "current_page": 1,
-    "total_page": 10,
-    "size": 10
+    "size": 10,
+    // "total_page": 10, not yet
   }
 }
 ```

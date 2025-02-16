@@ -45,8 +45,8 @@ type (
 		CustomerName string `json:"customer_name"`
 		TotalItems   int    `json:"total_items"`
 		Status       string `json:"status"`
-		Page         int    `json:"page" validate:"required"`
-		Size         int    `json:"size" validate:"required"`
+		Page         int    `json:"page" validate:"required,min=1"`
+		Size         int    `json:"size" validate:"required,min=1,max=50"`
 	}
 	InvoiceIndexingResponse struct {
 		InvoiceID    uint   `json:"invoice_id"`
