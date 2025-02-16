@@ -43,17 +43,16 @@ func (r *invoiceService) CreateInvoice(request *invoicedto.InvoiceRequest) (*mod
 	}
 
 	//append direct to invoice
-	for _, item := range request.Items {
-		invoice.InvoiceItem = append(invoice.InvoiceItem, model.InvoiceItem{
-			ItemID:    item.ID,
-			Name:      item.Name,
-			Quantity:  item.Quantity,
-			UnitPrice: item.UnitPrice,
-		})
-	}
-	
+	// for _, item := range request.Items {
+	// 	invoice.InvoiceItem = append(invoice.InvoiceItem, model.InvoiceItem{
+	// 		ItemID:    item.ID,
+	// 		Name:      item.Name,
+	// 		Quantity:  item.Quantity,
+	//  	UnitPrice: item.UnitPrice,
+	// 	})
+	//  }
 
-	createInvoice, err := r.InvoiceRepository.CreateInvoice(invoice)
+	createInvoice, err := r.InvoiceRepository.CreateInvoice(invoice, request.Items)
 	if err != nil {
 		return nil, err
 	}

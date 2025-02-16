@@ -5,11 +5,12 @@ import (
 
 	"fmt"
 
+	invoicedto "github.com/fnxr21/invoice-system/internal/dto/invoice"
 	"github.com/fnxr21/invoice-system/internal/model"
 )
 
 type Invoice interface {
-	CreateInvoice(invoice model.Invoice) (*model.Invoice, error)
+	CreateInvoice(invoice model.Invoice, items []invoicedto.Item) (*model.Invoice, error)
 	GetInvoiceByID(id uint) (*model.Invoice, error)
 	ListInvoice() ([]*model.Invoice, error)
 	UpdateInvoice(invoice model.Invoice) (*model.Invoice, error)
@@ -17,7 +18,7 @@ type Invoice interface {
 	GetInvoceIndexing(filter model.InvoiceIndexing) ([]*model.InvoiceIndexingNew, error)
 }
 
-func (r *repository) CreateInvoice(invoice model.Invoice) (*model.Invoice, error) {
+func (r *repository) CreateInvoice(invoice model.Invoice, items []invoicedto.Item) (*model.Invoice, error) {
 	var err error
 
 	// fmt.Println("invo", invoice.items)
@@ -31,26 +32,16 @@ func (r *repository) CreateInvoice(invoice model.Invoice) (*model.Invoice, error
 		return nil, err
 	}
 
-	// last Commit
-	if err := tx.Commit().Error; err != nil {
-		tx.Rollback()
-		return nil, err
-	}
+	for _, item := range items {
 
-	uniqueItems := make(map[int]bool)
-	for _, item := range invoice.InvoiceItem {
-		if _, exists := uniqueItems[int(item.InvoiceID)]; exists {
-			continue // Skip jika item sudah ada
-		}
-
-		uniqueItems[int(item.ItemID)] = true
 		invoiceitem := model.InvoiceItem{
 			InvoiceID: invoice.ID, //add invoice id
-			ItemID:    item.ItemID,
+			ItemID:    item.ID,
 			Name:      item.Name,
 			Quantity:  item.Quantity,
 			UnitPrice: item.UnitPrice,
 		}
+		// if err
 		if err = tx.Create(&invoiceitem).Error; err != nil {
 			tx.Rollback()
 			return nil, err
