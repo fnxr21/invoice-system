@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -23,7 +22,6 @@ func (h *handlerInvoice) CreateInvoice(c echo.Context) error {
 
 	var req invoicedto.InvoiceRequest
 	if err := c.Bind(&req); err != nil {
-		fmt.Println("Bind Error:", err) // Debugging untuk melihat kesalahan
 		return c.JSON(http.StatusBadRequest, map[string]string{
 			"error":  "Invalid request payload",
 			"detail": err.Error(),
@@ -40,7 +38,6 @@ func (h *handlerInvoice) CreateInvoice(c echo.Context) error {
 func (h *handlerInvoice) IndexInvoice(c echo.Context) error {
 	var req invoicedto.InvoiceIndexing
 	if err := c.Bind(&req); err != nil {
-		fmt.Println("Bind Error:", err) // Debugging untuk melihat kesalahan
 		return c.JSON(http.StatusBadRequest, map[string]string{
 			"error":  "Invalid request payload",
 			"detail": err.Error(),
@@ -72,7 +69,6 @@ func (h *handlerInvoice) UpdateInvoiceByID(c echo.Context) error {
 
 	var req invoicedto.InvoiceRequestUpdate
 	if err := c.Bind(&req); err != nil {
-		fmt.Println("Bind Error:", err) // Debugging untuk melihat kesalahan
 		return c.JSON(http.StatusBadRequest, map[string]string{
 			"error":  "Invalid request payload",
 			"detail": err.Error(),

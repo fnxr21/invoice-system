@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 
 	itemdto "github.com/fnxr21/invoice-system/internal/dto/item"
 	"github.com/fnxr21/invoice-system/internal/model"
@@ -27,7 +26,6 @@ func (r *itemService) CreateItem(request *itemdto.ItemRequest) (*model.Item, err
 		Name: request.Name,
 		Type: request.Type,
 	}
-	fmt.Println(item)
 
 	user, err := r.ItemRepository.CreateItem(item)
 	if err != nil {

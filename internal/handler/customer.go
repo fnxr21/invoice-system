@@ -34,7 +34,7 @@ func (h *handlerCustomer) CreateCustomer(c echo.Context) error {
 
 	response, err := h.CustomerService.CreateCustomer(&req)
 	if err != nil {
-		return errorhandler.ErrorHandler(err, http.StatusInternalServerError, c)
+		return errorhandler.ErrorHandler(err, http.StatusBadRequest, c)
 	}
 	return c.JSON(http.StatusOK, resultdto.SuccessResult{Data: response})
 }

@@ -1,7 +1,7 @@
 package service
 
 import (
-	"fmt"
+	// "fmt"
 	"time"
 
 	invoicedto "github.com/fnxr21/invoice-system/internal/dto/invoice"
@@ -51,10 +51,7 @@ func (r *invoiceService) CreateInvoice(request *invoicedto.InvoiceRequest) (*mod
 			UnitPrice: item.UnitPrice,
 		})
 	}
-	// fmt.Println(invoice.InvoiceItem)
-	fmt.Println()
-	// fmt.Println(request)
-	// fmt.Println()
+	
 
 	createInvoice, err := r.InvoiceRepository.CreateInvoice(invoice)
 	if err != nil {
@@ -70,13 +67,11 @@ func (r *invoiceService) IndexInvoice(req invoicedto.InvoiceIndexing) ([]*model.
 		return nil, nil, err // Handle error for issueDate
 	}
 
-	fmt.Println("check", issueDate)
 	dueDate, err := parseDate(req.DueDate)
 	if err != nil {
 		return nil, nil, err // Handle error for dueDate
 	}
 
-	fmt.Println()
 	invoceIndex := model.InvoiceIndexing{
 		InvoiceID:    req.InvoiceID,
 		IssueDate:    issueDate,
@@ -135,10 +130,6 @@ func (r *invoiceService) UpdateInvoice(request *invoicedto.InvoiceRequestUpdate)
 			UnitPrice: item.UnitPrice,
 		})
 	}
-	// fmt.Println(invoice.InvoiceItem)
-	fmt.Println()
-	// fmt.Println(request)
-	// fmt.Println()
 
 	createInvoice, err := r.InvoiceRepository.UpdateInvoice(invoice)
 	if err != nil {
