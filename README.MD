@@ -39,7 +39,7 @@ Link
 └── README.md                 # Project overview and usage guide
 ```
 
-# Running in Local
+## Running in Local
 
 Clone the repository
 
@@ -99,12 +99,12 @@ go run main.go
 
 open service
 
-```
+```cmd
 cd internal/service
 ```
 
 running unitesting
 
-```
+```cmd
 got test -v
 ```
